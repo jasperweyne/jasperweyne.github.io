@@ -1,9 +1,316 @@
 <html>
 	<head>
-		<title>JasperWeyne.io</title>
+		<title>STDI/O Productions</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+		<script>
+// Based on: http://jsfiddle.net/Dxtyu/3124/
+$(document).ready(function() {
+	$(document).on("scroll", onScroll);
+	
+	
+	// sidebar hover
+	current = $('#projecten #sidebar a').first().attr('id');
+	$('#projecten #sidebar a').first().addClass("active").stop(true, true);
+	$('#projecten #display #aNone').addClass("inactive").stop(true, true);
+	$('#projecten #display div').first().removeClass("inactive").addClass("active").stop(true, true);
+	
+	$('#projecten #sidebar a').mouseenter(function(e) {
+		if (current != $(this).attr('id')) {
+			current = $(this).attr('id');
+		
+			var sideElem    = $('#projecten #sidebar a.active'),
+				textElem    = $('#projecten #display div.active'),
+				textElemNew = $('#projecten #display div[id^="'+current+'"]');
+		
+			sideElem.removeClass("active");
+			textElem.removeClass("active");
+		
+			// larger new box
+			if (textElem.height() < textElemNew.height()) {
+				$('#projecten #display').stop().animate({
+					'height': textElemNew.height()
+				}, 200, 'swing');
+			}
+		
+			$(this).addClass('active');
+			textElem.one('transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd', function(e) {
+				var textNew = $('#projecten #display div[id^="'+current+'"]');
+				textElem.addClass("inactive");
+				textNew.removeClass("inactive");
+				textNew.addClass('active');
+				
+				// smaller new box
+				$('#projecten #display').stop().animate({
+					'height': textNew.height()
+				}, 200, 'swing');
+			});
+		}
+	});
+	
+	// smoothscroll
+	$('a[href^="#"]').on('click', function(e) {
+		e.preventDefault();
+		$(document).off("scroll");
+
+		$('nav a').removeClass("active");
+		$('nav a[href^="'+$(this).attr('href')+'"]').addClass('active');
+
+		var target = this.hash;
+		$('html, body').stop().animate({
+			'scrollTop': $(target).offset().top + 2
+		}, 500, 'swing', function() {
+			window.location.hash = target;
+			$(document).on("scroll", onScroll);
+		});
+	});
+	onScroll();
+});
+
+function onScroll(event) {
+	var scrollPos = $(document).scrollTop();
+	$('nav a').each(function() {
+		var refElement = $($(this).attr("href"));
+		if (scrollPos >= refElement.position().top && scrollPos < refElement.position().top + refElement.height()) {
+			$('nav a').removeClass("active");
+			$(this).addClass("active");
+		}
+	});
+}
+		</script>
+		<style>
+html, body {
+	padding: 0;
+	margin: 0;
+	height: 100%;
+	font-family: "Open Sans", Arial, sans-serif;
+	font-size: 1.1em;
+	color: white;
+	background-color: #060606;
+}
+.wrapper {
+	max-width: 1200px;
+	width: 100%;
+	margin: auto;
+}
+.header {
+	position: fixed;
+	top: 0;
+	width: 100%;
+	height: 100px;
+	color: white;
+	background-color: rgba(0,0,0,.5);
+	z-index: 100;
+	overflow: hidden;
+}
+.header nav {
+	height: 100px;
+	float: right;
+	display: table;
+}
+.header nav a {
+	display: table-cell;
+	vertical-align: middle;
+	padding: 0 25px;
+	color: white;
+	text-decoration: none;
+	transition: border .2s;
+	padding-top: .5em;
+	border-bottom: solid .5em transparent;
+}
+.header nav a.active,
+.header nav a.active:hover {
+	border-bottom: solid .5em rgba(255,255,255,0.5);
+}
+.header nav a:hover {
+	border-bottom: solid .5em rgba(255,255,255,0.25);
+}
+.footer {
+	background-color: #222;
+	width: 100%;
+	display: block;
+	padding: 25px 0;
+}
+.button {
+	cursor: pointer;
+	text-decoration: none;
+	-webkit-touch-callout: none; /* iOS Safari */
+	-webkit-user-select: none;   /* Chrome/Safari/Opera */
+	-khtml-user-select: none;    /* Konqueror */
+	-moz-user-select: none;      /* Firefox */
+	-ms-user-select: none;       /* IE/Edge */
+	user-select: none;           /* non-prefixed version, unsupported */
+	transition: all .2s;
+}
+#home {
+	background-image: url("home.jpg");
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center 55%;
+	display: block;
+	position: relative;
+	top: 0;
+	width: 100%;
+	height: 100%;
+}
+#home:before {
+	content: " ";
+	width: 100%;
+	height: 5em;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	background: -webkit-linear-gradient(rgba(0,0,0,0), #060606); /* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(rgba(0,0,0,0), #060606); /* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(rgba(0,0,0,0), #060606); /* For Firefox 3.6 to 15 */
+	background: linear-gradient(rgba(0,0,0,0), #060606); /* Standard syntax */
+}
+#home div,
+#home .down {
+	display: table;
+	position: absolute;
+	left: 0;
+	right: 0;
+	margin: auto;
+}
+#home .msg {
+	color: white;
+	bottom: 45%;
+	color: white;
+	text-align: right;
+	width: 40%;
+	max-width: 600px;
+}
+#home .msg h1 {
+	margin: 0px;
+	border-bottom: solid white 2px;
+}
+#home .down {
+	background-color: white;
+	text-align: center;
+	color: black;
+	opacity: 0.5;
+	width: 50px;
+	height: 50px;
+	font-size: 1.5em;
+	bottom: 15%;
+}
+#home .down:hover {
+	opacity: 1;
+}
+#projecten,
+#over {
+	padding-top: 100px;
+}
+#projecten {
+	display: table;
+}
+#projecten #sidebar {
+	float: left;
+	width: 300px;
+}
+#projecten #sidebar a {
+	height: 200px;
+	width: 300px;
+	position: relative;
+	margin-top: 25px;
+	display: block;
+	-webkit-filter: grayscale(100%); /* Chrome, Safari, Opera */
+    filter: grayscale(100%);
+	transition: all .4s;
+}
+#projecten #sidebar a:hover,
+#projecten #sidebar a.active {
+	-webkit-filter: none; /* Chrome, Safari, Opera */
+    filter: none;
+}
+#projecten #sidebar a h3 {
+	position: absolute;
+	bottom: 0;
+	width: 280px;
+	left: 0;
+	background-color: rgba(0,0,0,0.75);
+	color: #fff;
+	text-align: right;
+	margin: 0;
+	padding: 0 10px;
+}
+#projecten #display {
+	background-color: #eee;
+	margin-left: 50px;
+	margin-top: 25px;
+	color: black;
+	padding: 25px;
+	float: left;
+	width: 800px;
+}
+#projecten #display div {
+	opacity: 0;
+	transition: opacity .2s;
+}
+#projecten #display div.active {
+	opacity: 1;
+}
+#projecten #display .inactive {
+	display: none;
+}
+		</style>
 	</head>
 	<body>
-		<h1>Jasper Weyne.io</h1>
-		<p>This is a placeholder for a website yet to be created</p>
+		<div class="header">
+			<div class="wrapper">
+				<img border="0" alt="STDI/O" src="logo_white.png" width="200" height="100">
+				<nav>
+					<a href="#home">Home</a>
+					<a href="#projecten">Projecten</a>
+					<a href="#over">Over Ons</a>
+				</nav>
+			</div>
+		</div>
+		<div id="home">
+			<div class="msg">
+				<h1><span style="color:lime">Digitaal.</span> Elegant.</h1>
+				<span>Apps, Games, Software, Marketing & Webdesign</span>
+			</div>
+			<a href="#projecten" class="down button">&darr;</a>
+		</div>
+		<div class="wrapper">
+			<div id="projecten">
+				<div id="sidebar">
+					<a id="aAspen" class="button">
+						<img border="0" alt="STDI/O" src="home.orig.png" width="300" height="200">
+						<h3>Project Aspen</h3>
+					</a>
+					<a id="aZoundgame" class="button">
+						<img border="0" alt="STDI/O" src="home.orig.png" width="300" height="200">
+						<h3>ZoundGame</h3>
+					</a>
+					<a id="aDal" class="button">
+						<img border="0" alt="STDI/O" src="home.orig.png" width="300" height="200">
+						<h3>Digital Art Lab.nl</h3>
+					</a>
+				</div>
+				<div id="display">
+					<span id="aNone">JavaScript is required for this slideshow to work, please enable it.</span>
+					<div id="aAspen" class="inactive">
+						<span>aspen</span>
+					</div>
+					<div id="aZoundgame" class="inactive">
+						<span>zoundgame</span>
+					</div>
+					<div id="aDal" class="inactive">
+						<span>dal<br />digitalartlab.nl</span>
+					</div>
+				</div>
+			</div>
+			<div id="over">
+				<span>Hoi!<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />DOEI</span>
+			</div>
+		</div>
+		<div class="footer">
+			<div class="wrapper">
+				<span>HOI</span>
+			</div>
+		</div>
 	</body>
 </html>
+	
